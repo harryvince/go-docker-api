@@ -42,7 +42,7 @@ func CreatePostgres(c *gin.Context) {
 		return
 	}
 	ln.Close()
-	log.Println("Port is available")
+	log.Printf("Port, %s is available", body.Port)
 
 	// Create a docker client
 	cli, err := client.NewClientWithOpts(client.FromEnv)
