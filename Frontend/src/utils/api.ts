@@ -1,12 +1,14 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Containers, SystemInfo } from '../types/types';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function GetSystemInfo() {
     const queryClient = useQueryClient();
     
     const systemInfoQuery = useQuery<SystemInfo>(
       ["systemInfo"], 
-      () => fetch("http://localhost:8080/api/system-stats").then(response => response.json()),
+      () => fetch(`${API_URL}/system-stats`).then(response => response.json()),
       {
         staleTime: 60000,
         refetchInterval: 60000,
@@ -22,7 +24,7 @@ export function GetContainers() {
     
     const containersQuery = useQuery<Containers>(
       ["containers"], 
-      () => fetch("http://localhost:8080/api/containers").then(response => (response.status === 200) ? response.json(): (function(){throw new Error("Error")})()),
+      () => fetch(`${API_URL}/containers`).then(response => (response.status === 200) ? response.json(): (function(){throw new Error("Error")})()),
       {
         staleTime: 60000,
         refetchInterval: 60000,
