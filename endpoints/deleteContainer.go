@@ -22,6 +22,12 @@ func DeleteContainer(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Invalid request body, please provide a container name"})
 		return
 	}
+
+	if body.ContainerName == "" && body.ContainerID == "" {
+		c.JSON(400, gin.H{"error": "Container name or ID cannot be empty"})
+		return
+	}
+
 	ctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
