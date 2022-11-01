@@ -9,4 +9,5 @@ func Routes(route *gin.Engine) {
 	// Register endpoints here
 	router := route.Group("/")
 	router.POST("/postgres", CreatePostgres)
+	router.POST("/mysql", CreateMySQL)
 }

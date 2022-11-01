@@ -10,6 +10,7 @@ import (
 
 func init() {
 	initializers.LoadEnvVariables()
+	initializers.PullAllImages()
 }
 
 func main() {
