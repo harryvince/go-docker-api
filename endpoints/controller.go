@@ -11,4 +11,5 @@ func Routes(route *gin.Engine) {
 	router.POST("/postgres", CreatePostgres)
 	router.POST("/mysql", CreateMySQL)
 	router.GET("/system-stats", SystemStats)
+	router.GET("/containers", GetContainersEndpoint)
 }
