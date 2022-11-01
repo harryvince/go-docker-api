@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
 	"net/http"
 
 	"github.com/docker/docker/api/types"
@@ -37,13 +36,10 @@ func CreatePostgres(c *gin.Context) {
 	}
 
 	// Check if the port is already in use
-	ln, err := net.Listen("tcp", ":"+body.Port)
-	if err != nil {
+	if !utils.CheckPort(body.Port) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Port is already in use"})
 		return
 	}
-	ln.Close()
-	log.Printf("Port, %s is available", body.Port)
 
 	// Create a docker client
 	cli, err := client.NewClientWithOpts(client.FromEnv)

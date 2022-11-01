@@ -10,6 +10,7 @@ func Routes(route *gin.Engine) {
 	router := route.Group("/api")
 	router.POST("/postgres", CreatePostgres)
 	router.POST("/mysql", CreateMySQL)
+	router.POST("/ubuntu", CreateUbuntuInstance)
 	router.GET("/system-stats", SystemStats)
 	router.GET("/containers", GetContainersEndpoint)
 	router.POST("/delete-container", DeleteContainer)

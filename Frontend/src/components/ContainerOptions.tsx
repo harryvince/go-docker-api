@@ -3,6 +3,7 @@ import { GetContainers } from "../utils/api";
 import dockerContainer from "../assets/dockerContainer.png";
 import postgreSQL from "../assets/postgreSQL.png";
 import mySQL from "../assets/mySQL.png";
+import ubuntu from "../assets/ubuntu-logo.png";
 
 export default function ContainerOptions() {
     const { data, isLoading, isError } = GetContainers();
@@ -69,6 +70,17 @@ export default function ContainerOptions() {
                                         <div className="avatar">
                                           <div className="mask w-12 h-12">
                                             <img src={mySQL} alt="MySQL" />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                )}
+                                {container.Name.split("-")[0] === "ubuntu" && (
+                                    <td>
+                                      <div className="flex items-center space-x-3">
+                                        <div className="avatar">
+                                          <div className="mask w-12 h-12">
+                                            <img src={ubuntu} alt="Ubuntu" />
                                           </div>
                                         </div>
                                       </div>

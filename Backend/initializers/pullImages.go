@@ -28,4 +28,5 @@ func PullImage(image string) {
 func PullAllImages() {
 	PullImage("postgres")
 	PullImage("mysql")
+	PullImage("takeyamajp/ubuntu-sshd")
 }

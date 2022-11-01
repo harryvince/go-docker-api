@@ -17,7 +17,7 @@ import (
 )
 
 // Create a postgres database using the docker sdk
-func CreateMySQL(c *gin.Context) {
+func CreateUbuntuInstance(c *gin.Context) {
 	// Get the port from the request body JSON
 	var body struct {
 		Port string `json:"port"`
@@ -35,7 +35,6 @@ func CreateMySQL(c *gin.Context) {
 		return
 	}
 
-	// Check if the port is already in use
 	if !utils.CheckPort(body.Port) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Port is already in use"})
 		return
@@ -60,13 +59,14 @@ func CreateMySQL(c *gin.Context) {
 	}
 
 	// Create port bindings
-	portBindings := nat.PortMap{"3306/tcp": []nat.PortBinding{hostBindings}}
+	portBindings := nat.PortMap{"22/tcp": []nat.PortBinding{hostBindings}}
 	cont, err := cli.ContainerCreate(
 		context.Background(),
 		&container.Config{
-			Image: "mysql",
+			Image: "takeyamajp/ubuntu-sshd",
 			Env: []string{
-				fmt.Sprintf("MYSQL_ROOT_PASSWORD=%s", password),
+				fmt.Sprintf("ROOT_PASSWORD=%s", password),
+				"TZ=Europe/London",
 			},
 		},
 		&container.HostConfig{
@@ -75,7 +75,7 @@ func CreateMySQL(c *gin.Context) {
 		},
 		&network.NetworkingConfig{},
 		nil,
-		"mysql-"+body.Port,
+		"ubuntu-"+body.Port,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -83,8 +83,10 @@ func CreateMySQL(c *gin.Context) {
 
 	// Start the container
 	if err := cli.ContainerStart(context.Background(), cont.ID, types.ContainerStartOptions{}); err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to start container"})
+		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Created mysql database", "username": "root", "password": password, "host": utils.GetLocalIP(), "port": body.Port})
+	c.JSON(http.StatusCreated, gin.H{"message": "Created Ubuntu VM", "username": "root", "password": password, "host": utils.GetLocalIP(), "port": body.Port})
 }

@@ -8,7 +8,7 @@ export function GetSystemInfo() {
     
     const systemInfoQuery = useQuery<SystemInfo>(
       ["systemInfo"], 
-      () => fetch(`${API_URL}/system-stats`).then(response => response.json()),
+      () => fetch(`${API_URL}/system-stats`).then(response => (response.status === 200) ? response.json(): (function(){throw new Error("Error")})()),
       {
         staleTime: 60000,
         refetchInterval: 60000,
