@@ -56,10 +56,6 @@ func CreateMySQL(c *gin.Context) {
 		HostIP:   "0.0.0.0",
 		HostPort: body.Port,
 	}
-	containerPort, err := nat.NewPort("tcp", body.Port)
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	// Generate a random password for the database
 	password, err := password.Generate(15, 7, 0, false, false)
@@ -68,7 +64,7 @@ func CreateMySQL(c *gin.Context) {
 	}
 
 	// Create port bindings
-	portBindings := nat.PortMap{containerPort: []nat.PortBinding{hostBindings}}
+	portBindings := nat.PortMap{"3306/tcp": []nat.PortBinding{hostBindings}}
 	cont, err := cli.ContainerCreate(
 		context.Background(),
 		&container.Config{
@@ -94,5 +90,5 @@ func CreateMySQL(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Created mysql database", "username": "root", "password": password, "host": utils.GetLocalIP(), "port": body.Port})
+	c.JSON(http.StatusCreated, gin.H{"message": "Created mysql database", "username": "root", "password": password, "host": utils.GetLocalIP(), "port": body.Port})
 }

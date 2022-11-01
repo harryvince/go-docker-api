@@ -3,6 +3,7 @@ package endpoints
 import (
 	"context"
 	"log"
+	"net/http"
 	"strings"
 
 	"github.com/docker/docker/api/types"
@@ -10,8 +11,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type Container struct {
+	Name string
+	ID   string
+}
+
 // GetContainers returns all containers
-func GetContainers(c *gin.Context) []string {
+func GetContainers(c *gin.Context) []Container {
 	ctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
@@ -23,9 +29,9 @@ func GetContainers(c *gin.Context) []string {
 		log.Fatal(err)
 	}
 
-	var containersToReturn []string
+	var containersToReturn []Container
 	for _, container := range containers {
-		containersToReturn = append(containersToReturn, strings.Split(container.Names[0], "/")[1])
+		containersToReturn = append(containersToReturn, Container{strings.Split(container.Names[0], "/")[1], container.ID})
 	}
 
 	return containersToReturn
@@ -33,7 +39,7 @@ func GetContainers(c *gin.Context) []string {
 
 // GetContainersEndpoint returns all containers
 func GetContainersEndpoint(c *gin.Context) {
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"containers": GetContainers(c),
 	})
 }
