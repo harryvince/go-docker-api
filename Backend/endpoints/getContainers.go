@@ -39,6 +39,11 @@ func GetContainers(c *gin.Context) []Container {
 
 // GetContainersEndpoint returns all containers
 func GetContainersEndpoint(c *gin.Context) {
+	containers := GetContainers(c)
+	if len(containers) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "No containers found!"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"containers": GetContainers(c),
 	})

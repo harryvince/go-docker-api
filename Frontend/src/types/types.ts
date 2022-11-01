@@ -8,3 +8,12 @@ export type SystemInfo = {
         Free: string;
     },
 };
+
+export type Container = {
+    Name: string;
+    ID: string;
+}
+
+export type Containers = {
+    containers: Container[];
+}
