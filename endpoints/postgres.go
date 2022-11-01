@@ -13,6 +13,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
 	"github.com/gin-gonic/gin"
+	"github.com/harryvince/go-docker-api/utils"
 	"github.com/sethvargo/go-password/password"
 )
 
@@ -93,5 +94,5 @@ func CreatePostgres(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Created postgres database", "password": password, "port": body.Port})
+	c.JSON(http.StatusOK, gin.H{"message": "Created postgres database", "username": "postgres", "password": password, "host": utils.GetLocalIP(), "port": body.Port})
 }
