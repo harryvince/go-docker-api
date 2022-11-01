@@ -7,7 +7,7 @@ import (
 // Controller registers all endpoints
 func Routes(route *gin.Engine) {
 	// Register endpoints here
-	router := route.Group("/")
+	router := route.Group("/api")
 	router.POST("/postgres", CreatePostgres)
 	router.POST("/mysql", CreateMySQL)
 	router.GET("/system-stats", SystemStats)
