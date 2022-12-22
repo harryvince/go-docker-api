@@ -1,11 +1,9 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { Containers, SystemInfo } from '../types/types';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export function GetSystemInfo() {
-    const queryClient = useQueryClient();
-    
     const systemInfoQuery = useQuery<SystemInfo>(
       ["systemInfo"], 
       () => fetch(`${API_URL}/system-stats`).then(response => (response.status === 200) ? response.json(): (function(){throw new Error("Error")})()),
@@ -20,8 +18,6 @@ export function GetSystemInfo() {
 }
 
 export function GetContainers() {
-    const queryClient = useQueryClient();
-    
     const containersQuery = useQuery<Containers>(
       ["containers"], 
       () => fetch(`${API_URL}/containers`).then(response => (response.status === 200) ? response.json(): (function(){throw new Error("Error")})()),
@@ -33,4 +29,22 @@ export function GetContainers() {
     );
 
     return containersQuery;
+}
+
+export function CreateContainer(type: "mysql" | "ubuntu" | "postgres"){
+    const queryClient = useQueryClient();
+    const createMutation = useMutation<Containers>(
+      [`${type}`], 
+      () => fetch(`${API_URL}/${type}`, 
+      {
+        method: 'POST',
+        body: JSON.stringify({port: Math.floor(1000 + Math.random() * 9000).toString()})
+      }
+      ).then(response => (response.status === 201) ? response.json(): (function(){throw new Error("Error")})()),
+      {
+        onSuccess: () => queryClient.invalidateQueries(["containers", "system-info"]),
+      }
+    );
+
+    return createMutation;
 }
